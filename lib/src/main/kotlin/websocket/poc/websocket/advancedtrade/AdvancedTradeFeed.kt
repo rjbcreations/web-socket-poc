@@ -27,9 +27,10 @@ internal class AdvancedTradeFeed(
 
     override fun onMessage(webSocket: WebSocket, text: String) {
         val decoded = mapper.readValue<JsonNode>(text)
-        when (val type = decoded.get("type").asText()) {
+        val type = decoded.get("type").asText()
+        when (type) {
             "error" -> handleErrorMessage(decoded)
-            "heartbeat" -> handleHeartbeatMessage(text)
+            "heartbeats" -> handleHeartbeatMessage(text)
             "market_trades" -> handleMarketTradeMessage(text)
             "status" -> handleStatusMessage(text)
             "ticker" -> handleTickerMessage(text)

@@ -26,13 +26,14 @@ class RequestSignatory(val apiSecret: String) {
         val mac = Mac.getInstance(ALGORITHM)
         mac.init(keySpec)
 
-        return productIds.joinToString (",") { it }.let {
+        return productIds.joinToString(",") { it }.let {
             println("RequestSignatory - productIds: $it")
             println("RequestSignatory - timestamp: $timestamp")
             println("RequestSignatory - channelName: $channelName")
 
 //            firstWay(timestamp, channelName, it, mac)
-             secondWayWithBase64EncodedStringSignature(timestamp, channelName, it, mac)
+            //secondWayWithBase64EncodedStringSignature(timestamp, channelName, it, mac)
+            Pair(timestamp, Hmac().digestHmacSHA256("$timestamp$channelName${productIds.joinToString(",")}", apiSecret))
         }
     }
 
@@ -42,7 +43,13 @@ class RequestSignatory(val apiSecret: String) {
         val signature = mac.doFinal(what).toHexString()
         return Pair(timestamp, signature)
     }
-    private fun secondWayWithBase64EncodedStringSignature(timestamp: String, channelName: String, it: String, mac: Mac): Pair<String, String> {
+
+    private fun secondWayWithBase64EncodedStringSignature(
+        timestamp: String,
+        channelName: String,
+        it: String,
+        mac: Mac
+    ): Pair<String, String> {
         // Create the signature for this request
         val what = (timestamp + channelName + it).toByteArray(charset = Charsets.UTF_8)
         val signature = mac.doFinal(what)

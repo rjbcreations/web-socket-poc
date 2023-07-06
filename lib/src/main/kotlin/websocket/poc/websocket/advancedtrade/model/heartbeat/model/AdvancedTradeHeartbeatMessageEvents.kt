@@ -5,6 +5,6 @@ import java.math.BigInteger
 import java.time.Instant
 
 class AdvancedTradeHeartbeatMessageEvents(
-    @JsonProperty("current_time") val currentTime: Instant,
-    @JsonProperty("heartbeat_counter") val heartbeatCounter: BigInteger,
+    @JsonProperty("current_time") val currentTime: String,
+    @JsonProperty("heartbeat_counter") val heartbeatCounter: String,
 )
